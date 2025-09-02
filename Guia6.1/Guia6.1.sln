@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ejercicio6_delete", "Ejerci
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ejercicio7_execute_sp", "Ejercicio7\Ejercicio7_execute_sp.csproj", "{D73E99AB-DCAB-4295-ABDC-8F3409EE5744}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ejercicio8", "Ejercicio8\Ejercicio8.csproj", "{FAD266FB-7BF2-47FE-9323-AFF5B979B3D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ejercicio8_abm", "Ejercicio8\Ejercicio8_abm.csproj", "{FAD266FB-7BF2-47FE-9323-AFF5B979B3D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

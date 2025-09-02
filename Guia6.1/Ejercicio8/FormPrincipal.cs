@@ -34,18 +34,24 @@ public partial class FormPrincipal : Form
 
         foreach (var figura in figuras)
         {
+            ListViewItem item = null;
+
             if (figura is Circulo c)
             {
-                var item = new ListViewItem($"Círculo #{c.Id}");
+                item = new ListViewItem($"Círculo #{c.Id}");
                 item.SubItems.Add($"Área: {c.Area:F2}");
                 item.SubItems.Add($"Radio: {c.Radio:F2}");
-                listView1.Items.Add(item);
             }
             else if (figura is Rectangulo r)
             {
-                var item = new ListViewItem($"Rectángulo #{r.Id}");
+                item = new ListViewItem($"Rectángulo #{r.Id}");
                 item.SubItems.Add($"Área: {r.Area:F2}");
                 item.SubItems.Add($"Ancho: {r.Ancho:F2}, Largo: {r.Largo:F2}");
+            }
+
+            if (item != null)
+            {
+                item.Tag = figura;
                 listView1.Items.Add(item);
             }
         }
@@ -118,14 +124,46 @@ public partial class FormPrincipal : Form
             double ancho = Convert.ToDouble(tbAncho.Text);
             double largo = Convert.ToDouble(tbLargo.Text);
 
-            nueva =new  Rectangulo(){ Ancho=ancho, Largo=largo };
+            nueva = new Rectangulo() { Ancho = ancho, Largo = largo };
             ;
-        }else if (radioButton2.Checked)
+        }
+        else if (radioButton2.Checked)
         {
-            double radio= Convert.ToDouble(tbRadio.Text);
-            nueva = new Circulo() { Radio=radio};
+            double radio = Convert.ToDouble(tbRadio.Text);
+            nueva = new Circulo() { Radio = radio };
         }
 
         figuraDAL.Save(nueva);
+    }
+
+    private void btnVer_Click(object sender, EventArgs e)
+    {
+        if (listView1.SelectedItems.Count > 0)
+        {
+            Figura figuraSelected = listView1.SelectedItems[0].Tag as Figura;
+
+            if (figuraSelected != null)
+            {
+                tbAncho.Clear();
+                tbAncho.Clear();
+                tbRadio.Clear();
+
+                if (figuraSelected is Rectangulo r)
+                {
+                    radioButton1.Checked = true;
+                    tbAncho.Text = r.Ancho.ToString();
+                    tbLargo.Text=r.Largo.ToString();
+                }
+                else if (figuraSelected is Circulo c)
+                {
+                    radioButton2.Checked = true;
+                    tbRadio.Text = c.Radio.ToString();
+                }
+            }
+        }
+        else
+        {
+            MessageBox.Show("No hay ningún elemento seleccionado");
+        }
     }
 }

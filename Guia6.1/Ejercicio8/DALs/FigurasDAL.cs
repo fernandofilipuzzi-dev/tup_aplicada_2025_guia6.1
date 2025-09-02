@@ -73,7 +73,65 @@ ORDER BY f.Area
         return figuras;
     }
 
-    async public Task Save(Figura figura)
+    async public Task<Figura> GetById(int idFigura)
+    {
+        Figura figura = null;
+
+        string query = @"
+SELECT TOP 1 f.Id,
+	   CASE WHEN f.Tipo=1 THEN 'Rectangulo'
+			WHEN f.Tipo=2 THEN 'Circulo'
+	   ELSE 'Desconocido' END AS Tipo,
+	   f.Area,
+	   f.Ancho,
+	   f.Largo,
+	   f.Radio
+FROM Figuras f
+WHERE f.Id=@Id
+ORDER BY f.Area
+";
+
+        try
+        {
+            using SqlConnection conn = new SqlConnection(stringConnection);
+            await conn.OpenAsync();
+
+            #region comando sql
+            using SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@Id", idFigura);
+            #endregion
+
+            SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
+
+            if(await dataReader.ReadAsync())
+            {
+                #region parseo
+                int id = dataReader["Id"] != DBNull.Value ? Convert.ToInt32(dataReader["Id"]) : 0;
+                int? tipo = dataReader["Tipo"] != DBNull.Value ? Convert.ToInt32(dataReader["Tipo"]) : null;
+                double? area = Convert.ToInt32(dataReader["Area"] != DBNull.Value ? dataReader["Area"] : null);
+                double? ancho = Convert.ToInt32(dataReader["Ancho"] != DBNull.Value ? dataReader["Ancho"] : null);
+                double? largo = Convert.ToInt32(dataReader["Largo"] != DBNull.Value ? dataReader["Largo"] : null);
+                double? radio = Convert.ToInt32(dataReader["Radio"] != DBNull.Value ? dataReader["Radio"] : null);
+                #endregion
+
+                if (tipo == 1)
+                {
+                    figura = new Rectangulo() { Id=id, Area=area, Ancho=ancho, Largo=largo};
+                }
+                else if (tipo == 2)
+                {
+                    figura = new Circulo() { Id = id, Area = area, Radio = radio };
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        return figura;
+    }
+    
+    async public Task<Figura> Save(Figura nuevo)
     {
         int tipo = 0;
         double? ancho = null;
@@ -97,13 +155,13 @@ VALUES
             using SqlCommand comm = new SqlCommand(query, conn);
 
             
-            if (figura is Rectangulo r)
+            if (nuevo is Rectangulo r)
             { 
                 tipo = 1;
                 ancho = r.Ancho;
                 largo = r.Largo;
             }
-            else if (figura is Circulo c)
+            else if (nuevo is Circulo c)
             {
                 tipo = 2;
                 radio = c.Radio;
@@ -116,13 +174,43 @@ VALUES
 
             object idObject = await comm.ExecuteScalarAsync();
 
-            Console.WriteLine(Convert.ToInt32(idObject));
-
-            await conn.CloseAsync();
+            nuevo.Id=Convert.ToInt32( idObject );
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex}");
         }
+        return nuevo;
     }
+
+    async public Task<bool> Remove(int idFigura)
+    {
+        string query = @"
+DELETE 
+FROM Figuras 
+WHERE Id=@Id_Figura
+";
+
+        try
+        {
+            using SqlConnection conn = new SqlConnection(stringConnection);
+            await conn.OpenAsync();
+
+            #region sqlcommand
+            using SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@Id_Figura", idFigura);
+            #endregion
+
+            int cantidad = await cmd.ExecuteNonQueryAsync();
+
+            return cantidad>0;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+
+        return false;
+    }
+
 }

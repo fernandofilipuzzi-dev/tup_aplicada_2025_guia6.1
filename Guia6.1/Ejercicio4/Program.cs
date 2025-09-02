@@ -24,22 +24,19 @@ VALUES
             using SqlConnection conn = new SqlConnection(stringConnection);
             await conn.OpenAsync();
 
-            using SqlCommand comm = new SqlCommand(query, conn);
-            comm.Parameters.AddWithValue("@Tipo", tipo);
-            comm.Parameters.AddWithValue("@Ancho", ancho);
-            comm.Parameters.AddWithValue("@Largo", largo);
-            comm.Parameters.AddWithValue("@Radio", largo);
+            using SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@Tipo", tipo);
+            cmd.Parameters.AddWithValue("@Ancho", ancho);
+            cmd.Parameters.AddWithValue("@Largo", largo);
+            cmd.Parameters.AddWithValue("@Radio", largo);
 
-            object idObject = await comm.ExecuteScalarAsync();
+            object idObject = await cmd.ExecuteScalarAsync();
 
-            Console.WriteLine(Convert.ToInt32(idObject));
-
-            await conn.CloseAsync();
+            Console.WriteLine($"Id Figura insertada: {Convert.ToInt32(idObject)}");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex}");
-        }
-        
+        }        
     }
 }

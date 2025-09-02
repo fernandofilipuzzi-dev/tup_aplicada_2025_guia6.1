@@ -67,4 +67,13 @@
   <ItemGroup>
     <None Include="4_ejercicio4_insert.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="5_ejercicio5_update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="6_ejercicio6_delete.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="7_ejercicio7_sp_calcular_area.sql" />
+  </ItemGroup>
 </Project>

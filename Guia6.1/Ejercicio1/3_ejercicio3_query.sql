@@ -10,6 +10,8 @@ GO
 
 -- listar todo los registro Circulo
 
+DECLARE @Id INT =3;
+
 SELECT f.Id,
 	   CASE WHEN f.Tipo=1 THEN 'Rectangulo'
 			WHEN f.Tipo=2 THEN 'Circulo'
@@ -19,8 +21,7 @@ SELECT f.Id,
 	   f.Largo,
 	   f.Radio
 FROM Figuras f
-WHERE (CASE WHEN f.Tipo=2 THEN 'Circulo' ELSE 'OTRO' END) = 'Circulo'
-ORDER BY f.Area
+WHERE f.Id=@Id
 
 GO
 
