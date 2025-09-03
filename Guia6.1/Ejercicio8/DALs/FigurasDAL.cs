@@ -1,5 +1,6 @@
 ﻿using Ejercicio8.Models;
 using Microsoft.Data.SqlClient;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace Ejercicio8.DALs;
 
@@ -20,7 +21,7 @@ SELECT f.Id,
 	   f.Largo,
 	   f.Radio
 FROM Figuras f
-ORDER BY f.Area
+ORDER BY f.Id
 ";
         SqlConnection conn = new SqlConnection(stringConnection);
         await conn.OpenAsync();
@@ -45,7 +46,7 @@ ORDER BY f.Area
             if (tipo == 1)
             {
                 //forma abreviada
-                entidad = new Rectangulo() { Id=id, Area = area, Ancho = area, Largo =largo};
+                entidad = new Rectangulo() { Id=id, Area = area, Ancho = ancho, Largo =largo};
 
                 //en prog2 sería:
                 /*
@@ -131,7 +132,7 @@ ORDER BY f.Area
         return figura;
     }
     
-    async public Task<Figura> Save(Figura nuevo)
+    async public Task<Figura> Add(Figura nuevo)
     {
         int tipo = 0;
         double? ancho = null;
@@ -144,9 +145,6 @@ OUTPUT INSERTED.Id
 VALUES
 (@Tipo, @Ancho, @Largo, @Radio)
 ";
-
-        string stringConnection = "Data Source=TSP;Initial Catalog=GUIA6_1_Ejercicio1_DB;Integrated Security=True;Pooling=False;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Name=vscode-mssql;Connect Retry Count=1;Connect Retry Interval=10;Command Timeout=30";
-
         try
         {
             using SqlConnection conn = new SqlConnection(stringConnection);
@@ -183,6 +181,54 @@ VALUES
         return nuevo;
     }
 
+    async public Task<bool> Save(Figura entidad)
+    {
+        int id = 0;
+        double? area = null;
+        double? ancho = null;        
+        double? largo = null;
+        double? radio = null;
+
+        string query = @"
+UPDATE Figuras SET Area=@Area, Ancho=@Ancho, Largo=@Largo, Radio=@Radio
+WHERE Id=@Id_Figura
+";
+        try
+        {
+            using SqlConnection conn = new SqlConnection(stringConnection);
+            await conn.OpenAsync();
+
+            using SqlCommand comm = new SqlCommand(query, conn);
+
+            id = entidad.Id ?? 0;
+            if (entidad is Rectangulo r)
+            {
+                ancho = r.Ancho;
+                largo = r.Largo;
+            }
+            else if (entidad is Circulo c)
+            {
+                radio = c.Radio;
+            }
+            area = entidad.Area;
+
+            comm.Parameters.AddWithValue("@Id_Figura", id);
+            comm.Parameters.AddWithValue("@Area", area);
+            comm.Parameters.AddWithValue("@Ancho", ancho);
+            comm.Parameters.AddWithValue("@Largo", largo);
+            comm.Parameters.AddWithValue("@Radio", radio = 0.0);
+
+            int cantidad = await comm.ExecuteNonQueryAsync();
+
+            return id > cantidad;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex}");
+        }
+        return false;
+    }
+
     async public Task<bool> Remove(int idFigura)
     {
         string query = @"
@@ -212,5 +258,4 @@ WHERE Id=@Id_Figura
 
         return false;
     }
-
 }

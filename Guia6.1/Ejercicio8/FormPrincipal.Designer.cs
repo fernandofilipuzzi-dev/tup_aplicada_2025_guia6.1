@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             btnActualizar = new Button();
-            listView1 = new ListView();
+            lvwFiguras = new ListView();
             btnAgregar = new Button();
             groupBox1 = new GroupBox();
             groupBox3 = new GroupBox();
-            radioButton1 = new RadioButton();
-            radioButton2 = new RadioButton();
+            rbtTipoRectangulo = new RadioButton();
+            rbtTipoCirculo = new RadioButton();
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
@@ -60,13 +60,13 @@
             btnActualizar.UseVisualStyleBackColor = true;
             btnActualizar.Click += btnActualizar_Click;
             // 
-            // listView1
+            // lvwFiguras
             // 
-            listView1.Location = new Point(6, 34);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(429, 255);
-            listView1.TabIndex = 2;
-            listView1.UseCompatibleStateImageBehavior = false;
+            lvwFiguras.Location = new Point(6, 34);
+            lvwFiguras.Name = "lvwFiguras";
+            lvwFiguras.Size = new Size(429, 255);
+            lvwFiguras.TabIndex = 2;
+            lvwFiguras.UseCompatibleStateImageBehavior = false;
             // 
             // btnAgregar
             // 
@@ -98,8 +98,8 @@
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(radioButton1);
-            groupBox3.Controls.Add(radioButton2);
+            groupBox3.Controls.Add(rbtTipoRectangulo);
+            groupBox3.Controls.Add(rbtTipoCirculo);
             groupBox3.Location = new Point(18, 33);
             groupBox3.Name = "groupBox3";
             groupBox3.Size = new Size(161, 101);
@@ -107,27 +107,27 @@
             groupBox3.TabStop = false;
             groupBox3.Text = "Tipo de Figura";
             // 
-            // radioButton1
+            // rbtTipoRectangulo
             // 
-            radioButton1.AutoSize = true;
-            radioButton1.Location = new Point(31, 39);
-            radioButton1.Name = "radioButton1";
-            radioButton1.Size = new Size(106, 25);
-            radioButton1.TabIndex = 0;
-            radioButton1.TabStop = true;
-            radioButton1.Text = "Rectangulo";
-            radioButton1.UseVisualStyleBackColor = true;
+            rbtTipoRectangulo.AutoSize = true;
+            rbtTipoRectangulo.Location = new Point(31, 39);
+            rbtTipoRectangulo.Name = "rbtTipoRectangulo";
+            rbtTipoRectangulo.Size = new Size(106, 25);
+            rbtTipoRectangulo.TabIndex = 0;
+            rbtTipoRectangulo.TabStop = true;
+            rbtTipoRectangulo.Text = "Rectangulo";
+            rbtTipoRectangulo.UseVisualStyleBackColor = true;
             // 
-            // radioButton2
+            // rbtTipoCirculo
             // 
-            radioButton2.AutoSize = true;
-            radioButton2.Location = new Point(31, 70);
-            radioButton2.Name = "radioButton2";
-            radioButton2.Size = new Size(77, 25);
-            radioButton2.TabIndex = 1;
-            radioButton2.TabStop = true;
-            radioButton2.Text = "Circulo";
-            radioButton2.UseVisualStyleBackColor = true;
+            rbtTipoCirculo.AutoSize = true;
+            rbtTipoCirculo.Location = new Point(31, 70);
+            rbtTipoCirculo.Name = "rbtTipoCirculo";
+            rbtTipoCirculo.Size = new Size(77, 25);
+            rbtTipoCirculo.TabIndex = 1;
+            rbtTipoCirculo.TabStop = true;
+            rbtTipoCirculo.Text = "Circulo";
+            rbtTipoCirculo.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -200,7 +200,7 @@
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(listView1);
+            groupBox2.Controls.Add(lvwFiguras);
             groupBox2.Controls.Add(btnEliminar);
             groupBox2.Controls.Add(btnVer);
             groupBox2.Controls.Add(btnActualizar);
@@ -233,7 +233,7 @@
 
         #endregion
         private Button btnActualizar;
-        private ListView listView1;
+        private ListView lvwFiguras;
         private Button btnAgregar;
         private GroupBox groupBox1;
         private Label label3;
@@ -242,8 +242,8 @@
         private TextBox tbRadio;
         private TextBox tbLargo;
         private TextBox tbAncho;
-        private RadioButton radioButton2;
-        private RadioButton radioButton1;
+        private RadioButton rbtTipoCirculo;
+        private RadioButton rbtTipoRectangulo;
         private GroupBox groupBox3;
         private Button btnVer;
         private Button btnEliminar;

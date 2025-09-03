@@ -7,6 +7,7 @@ namespace Ejercicio8;
 public partial class FormPrincipal : Form
 {
     FigurasDAL figuraDAL = new FigurasDAL();
+    Figura figuraSelected;
 
     public FormPrincipal()
     {
@@ -15,22 +16,20 @@ public partial class FormPrincipal : Form
 
     private void FormPrincipal_Load(object sender, EventArgs e)
     {
-        listView1.View = View.Tile;
-        listView1.FullRowSelect = true;
-        listView1.HideSelection = false;
-        listView1.OwnerDraw = true; // nos permite customizar el dibujo
-        listView1.TileSize = new Size(300, 100);
-        listView1.BackColor = Color.WhiteSmoke;
-        listView1.BorderStyle = BorderStyle.None;
-
-        // vista que dibuja cards
-        listView1.DrawItem += ListView1_DrawItem;
+        lvwFiguras.View = View.Tile;
+        lvwFiguras.FullRowSelect = true;
+        lvwFiguras.HideSelection = false;
+        lvwFiguras.OwnerDraw = true;
+        lvwFiguras.TileSize = new Size(300, 100);
+        lvwFiguras.BackColor = Color.WhiteSmoke;
+        lvwFiguras.BorderStyle = BorderStyle.None;
+        lvwFiguras.DrawItem += lvwFiguras_DrawItem;
     }
 
     async private void btnActualizar_Click(object sender, EventArgs e)
     {
         List<Figura> figuras = await figuraDAL.GetAll();
-        listView1.Items.Clear();
+        lvwFiguras.Items.Clear();
 
         foreach (var figura in figuras)
         {
@@ -52,38 +51,38 @@ public partial class FormPrincipal : Form
             if (item != null)
             {
                 item.Tag = figura;
-                listView1.Items.Add(item);
+                lvwFiguras.Items.Add(item);
             }
         }
     }
 
-    private void ListView1_DrawItem(object sender, DrawListViewItemEventArgs e)
+    private void lvwFiguras_DrawItem(object sender, DrawListViewItemEventArgs e)
     {
-        // Card background
+        //background
         var rect = e.Bounds;
         using (var brush = new SolidBrush(Color.White))
         using (var pen = new Pen(Color.LightGray, 1))
         {
-            // borde redondeado
+            //bordes
             int radius = 10;
             var path = RoundedRect(rect, radius);
             e.Graphics.FillPath(brush, path);
             e.Graphics.DrawPath(pen, path);
         }
 
-        // Texto
+        //
         string text = e.Item.Text;
         var fontTitle = new Font("Segoe UI", 10, FontStyle.Bold);
         var fontSub = new Font("Segoe UI", 9, FontStyle.Regular);
 
-        // Primera línea en bold
+        //header
         e.Graphics.DrawString(text, fontTitle, Brushes.Black, rect.X + 10, rect.Y + 10);
 
-        // Subitems (se ven como líneas extra)
+        //subitems
         int offsetY = 30;
         foreach (ListViewItem.ListViewSubItem sub in e.Item.SubItems)
         {
-            if (sub == e.Item.SubItems[0]) continue; // skip title
+            if (sub == e.Item.SubItems[0]) continue;
             e.Graphics.DrawString(sub.Text, fontSub, Brushes.DimGray, rect.X + 10, rect.Y + offsetY);
             offsetY += 18;
         }
@@ -96,18 +95,18 @@ public partial class FormPrincipal : Form
         Rectangle arc = new Rectangle(bounds.Location, size);
         GraphicsPath path = new GraphicsPath();
 
-        // Top left arc
+        //
         path.AddArc(arc, 180, 90);
 
-        // Top right arc
+        //
         arc.X = bounds.Right - diameter;
         path.AddArc(arc, 270, 90);
 
-        // Bottom right arc
+        //
         arc.Y = bounds.Bottom - diameter;
         path.AddArc(arc, 0, 90);
 
-        // Bottom left arc
+        //
         arc.X = bounds.Left;
         path.AddArc(arc, 90, 90);
 
@@ -115,49 +114,78 @@ public partial class FormPrincipal : Form
         return path;
     }
 
-    private void btnAgregar_Click(object sender, EventArgs e)
+    async private void btnAgregar_Click(object sender, EventArgs e)
     {
-        Figura nueva = null;
-
-        if (radioButton1.Checked)
+        
+        if (rbtTipoRectangulo.Checked)
         {
+            Rectangulo r = figuraSelected==null? new Rectangulo(): figuraSelected as Rectangulo;
+
             double ancho = Convert.ToDouble(tbAncho.Text);
             double largo = Convert.ToDouble(tbLargo.Text);
 
-            nueva = new Rectangulo() { Ancho = ancho, Largo = largo };
-            ;
+            r.Ancho = ancho;
+            r.Largo = largo;
         }
-        else if (radioButton2.Checked)
+        else if (rbtTipoCirculo.Checked)
         {
+            Circulo c = figuraSelected == null ? new Circulo() : figuraSelected as Circulo;
+
             double radio = Convert.ToDouble(tbRadio.Text);
-            nueva = new Circulo() { Radio = radio };
+            c.Radio = radio;
         }
 
-        figuraDAL.Save(nueva);
+        if(figuraSelected.Id>0)
+           await figuraDAL.Save(figuraSelected);
+        else
+           await figuraDAL.Add(figuraSelected);
+
+        #region clear del area de edición
+        tbAncho.Enabled = true;
+        tbLargo.Enabled = true;
+        tbRadio.Enabled = true;
+        tbAncho.Clear();
+        tbLargo.Clear();
+        tbRadio.Clear();
+        rbtTipoCirculo.Checked = false;
+        rbtTipoRectangulo.Checked = false;
+        rbtTipoCirculo.Enabled = true;
+        rbtTipoRectangulo.Enabled = true;
+        #endregion
     }
 
     private void btnVer_Click(object sender, EventArgs e)
     {
-        if (listView1.SelectedItems.Count > 0)
+        if (lvwFiguras.SelectedItems.Count > 0)
         {
-            Figura figuraSelected = listView1.SelectedItems[0].Tag as Figura;
+            figuraSelected = lvwFiguras.SelectedItems[0].Tag as Figura;
 
             if (figuraSelected != null)
             {
                 tbAncho.Clear();
-                tbAncho.Clear();
+                tbLargo.Clear();
                 tbRadio.Clear();
+                rbtTipoRectangulo.Enabled = false;
+                rbtTipoCirculo.Enabled = false;
 
                 if (figuraSelected is Rectangulo r)
                 {
-                    radioButton1.Checked = true;
+                    rbtTipoRectangulo.Checked = true;
                     tbAncho.Text = r.Ancho.ToString();
-                    tbLargo.Text=r.Largo.ToString();
+                    tbLargo.Text = r.Largo.ToString();
+
+                    tbAncho.Enabled = true;
+                    tbLargo.Enabled = true;
+                    tbRadio.Enabled = false;
                 }
                 else if (figuraSelected is Circulo c)
                 {
-                    radioButton2.Checked = true;
+                    rbtTipoCirculo.Checked = true;
                     tbRadio.Text = c.Radio.ToString();
+
+                    tbAncho.Enabled = false;
+                    tbLargo.Enabled = false;
+                    tbRadio.Enabled = true;
                 }
             }
         }

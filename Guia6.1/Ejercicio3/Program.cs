@@ -41,11 +41,18 @@ ORDER BY f.Area
             {
                 #region parseo
                 int id = dataReader["Id"] != DBNull.Value ? Convert.ToInt32(dataReader["Id"]) : 0;
-                string? tipo = dataReader["Tipo"] != DBNull.Value ? Convert.ToString(dataReader["Tipo"]) : null;
+                //
+                //
+                //int? tipo = dataReader["Tipo"] != DBNull.Value ? Convert.ToString(dataReader["Tipo"]) : null;
+
+                int? tipo = dataReader.IsDBNull(dataReader.GetOrdinal("Tipo"))? null: dataReader.GetInt32(dataReader.GetOrdinal("Tipo"));
+
                 double? area = Convert.ToInt32(dataReader["Area"] != DBNull.Value ? dataReader["Area"] : null);
                 double? ancho = Convert.ToInt32(dataReader["Ancho"] != DBNull.Value ? dataReader["Ancho"] : null);
                 double? largo = Convert.ToInt32(dataReader["Largo"] != DBNull.Value ? dataReader["Largo"] : null);
                 double? radio = Convert.ToInt32(dataReader["Radio"] != DBNull.Value ? dataReader["Radio"] : null);
+
+
                 #endregion
 
                 Console.WriteLine($"{id,10}|{tipo,10}|{area,10:f2}|{ancho,10:f2}|{largo,10:f2}|{radio,10:f2}");
