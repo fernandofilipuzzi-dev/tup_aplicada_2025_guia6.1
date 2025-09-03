@@ -24,6 +24,12 @@ public partial class FormPrincipal : Form
         lvwFiguras.BackColor = Color.WhiteSmoke;
         lvwFiguras.BorderStyle = BorderStyle.None;
         lvwFiguras.DrawItem += lvwFiguras_DrawItem;
+        lvwFiguras.SelectedIndexChanged += lvwFiguras_SelectedIndexChanged;
+    }
+
+    private void lvwFiguras_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        lvwFiguras.Invalidate(); // Fuerza el redibujado del ListView
     }
 
     async private void btnActualizar_Click(object sender, EventArgs e)
@@ -58,27 +64,28 @@ public partial class FormPrincipal : Form
 
     private void lvwFiguras_DrawItem(object sender, DrawListViewItemEventArgs e)
     {
-        //background
         var rect = e.Bounds;
-        using (var brush = new SolidBrush(Color.White))
-        using (var pen = new Pen(Color.LightGray, 1))
+
+        // Si está seleccionado, fondo distinto
+        Color backColor = e.Item.Selected ? Color.LightBlue : Color.White;
+        Color borderColor = e.Item.Selected ? Color.DodgerBlue : Color.LightGray;
+
+        using (var brush = new SolidBrush(backColor))
+        using (var pen = new Pen(borderColor, 2))
         {
-            //bordes
             int radius = 10;
             var path = RoundedRect(rect, radius);
             e.Graphics.FillPath(brush, path);
             e.Graphics.DrawPath(pen, path);
         }
 
-        //
+        // Texto
         string text = e.Item.Text;
         var fontTitle = new Font("Segoe UI", 10, FontStyle.Bold);
         var fontSub = new Font("Segoe UI", 9, FontStyle.Regular);
 
-        //header
         e.Graphics.DrawString(text, fontTitle, Brushes.Black, rect.X + 10, rect.Y + 10);
 
-        //subitems
         int offsetY = 30;
         foreach (ListViewItem.ListViewSubItem sub in e.Item.SubItems)
         {
