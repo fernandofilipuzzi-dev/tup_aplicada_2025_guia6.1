@@ -7,6 +7,8 @@ USE GUIA6_1_Ejercicio1_DB;
 
 GO
 
+-- a- Cree un sp llamado sp_CalcularAreas que calcule el área de todas las entidades.
+
 CREATE OR ALTER PROCEDURE sp_CalcularAreas
 AS
 BEGIN
@@ -48,9 +50,12 @@ END
 
 GO
 
+-- b- Ejecutar el procedimiento almacenado
 EXEC  sp_CalcularAreas
 
 GO
+
+-- c- Realice la consulta de la tabla Figuras.
 
 SELECT f.Id,
 	   CASE WHEN f.Tipo=1 THEN 'Rectangulo'

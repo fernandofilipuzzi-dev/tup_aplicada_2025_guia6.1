@@ -1,14 +1,14 @@
 ﻿namespace Ejercicio8.Models;
 
-abstract public class Figura
+abstract public class FiguraModel
 {
     public int? Id { get; set; }
     public double? Area { get; set; }
 
-    public Figura()
+    public FiguraModel()
     { }
 
-    public Figura(int? id, double? area)
+    public FiguraModel(int? id, double? area)
     { 
         Id = id;
         Area = area;

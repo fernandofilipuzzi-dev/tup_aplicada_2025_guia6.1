@@ -8,38 +8,30 @@ USE GUIA6_1_Ejercicio1_DB;
 GO
 
 
--- listar todo los registro Circulo
+-- a- Realice la consulta de la tabla Figuras.
 
 SELECT * FROM Figuras;
 
 GO
 
+-- b- Establezca variables T-SQL con valores iniciales.
+
+DECLARE @FIGURA_NUEVA TABLE(Id INT);
 DECLARE @Tipo INT =1; --rectangulo
 DECLARE @Ancho DECIMAL(18,2)=10;
 DECLARE @Largo DECIMAL(18,2)=12;
 DECLARE @Radio DECIMAL(18,2)=NULL;
 
-IF @Tipo=1
-BEGIN
 
-	INSERT INTO Figuras (Tipo, Ancho, Largo)
-	OUTPUT INSERTED.Id
-	VALUES
-	(@Tipo, @Ancho, @Largo)
+-- c- insertar la nueva figura según los valores especificados, imprimir el Id generado. (cláusula OUTPUT)
 
-END
+INSERT INTO Figuras (Tipo, Ancho, Largo, Radio)
+OUTPUT INSERTED.Id 
+VALUES
+(@Tipo, @Ancho, @Largo, @Radio)
 
-ELSE IF @Tipo=2
-BEGIN
 
-	INSERT INTO Figuras (Tipo, Radio)
-	OUTPUT INSERTED.Id
-	VALUES
-	(@Tipo, @Radio)
-
-END
-
-GO
+-- d- Realice la consulta de la tabla Figuras.
 
 SELECT * FROM Figuras;
 

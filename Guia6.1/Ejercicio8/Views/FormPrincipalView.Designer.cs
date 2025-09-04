@@ -1,6 +1,6 @@
 ﻿namespace Ejercicio8
 {
-    partial class FormPrincipal
+    partial class FormPrincipalView
     {
         /// <summary>
         ///  Required designer variable.

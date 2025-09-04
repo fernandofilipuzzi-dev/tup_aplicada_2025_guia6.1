@@ -8,7 +8,7 @@ USE GUIA6_1_Ejercicio1_DB;
 GO
 
 
--- listar todo los registro Circulo
+-- listar la figura por ID.
 
 DECLARE @Id INT =3;
 

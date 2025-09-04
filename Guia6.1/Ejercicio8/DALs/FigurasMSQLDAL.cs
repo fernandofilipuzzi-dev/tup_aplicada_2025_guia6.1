@@ -1,16 +1,17 @@
 ﻿using Ejercicio8.Models;
+using Ejercicio8_abm.DALs;
 using Microsoft.Data.SqlClient;
 using System.Runtime.InteropServices.Marshalling;
 
 namespace Ejercicio8.DALs;
 
-public class FigurasDAL
+public class FigurasMSQLDAL:IFigurasDAL
 {
     string stringConnection = "Data Source=TSP;Initial Catalog=GUIA6_1_Ejercicio1_DB;Integrated Security=True;Pooling=False;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Name=vscode-mssql;Connect Retry Count=1;Connect Retry Interval=10;Command Timeout=30";
 
-    async public Task<List<Figura>> GetAll()
+    async public Task<List<FiguraModel>> GetAll()
     {
-        List<Figura> figuras = new List<Figura>();
+        List<FiguraModel> figuras = new List<FiguraModel>();
 
         #region conexion y comando sql
         string query = @"
@@ -42,11 +43,11 @@ ORDER BY f.Id
             double? radio = Convert.ToInt32(dataReader["Radio"] != DBNull.Value ? dataReader["Radio"] : null);
             #endregion 
 
-            Figura entidad =null;
+            FiguraModel entidad =null;
             if (tipo == 1)
             {
                 //forma abreviada
-                entidad = new Rectangulo() { Id=id, Area = area, Ancho = ancho, Largo =largo};
+                entidad = new RectanguloModels() { Id=id, Area = area, Ancho = ancho, Largo =largo};
 
                 //en prog2 sería:
                 /*
@@ -63,7 +64,7 @@ ORDER BY f.Id
             }
             else if (tipo == 2)
             {
-                entidad = new Circulo() { Id = id, Radio = largo };
+                entidad = new CirculoModel() { Id = id, Radio = largo };
             }
 
             figuras.Add(entidad);
@@ -74,9 +75,9 @@ ORDER BY f.Id
         return figuras;
     }
 
-    async public Task<Figura> GetById(int idFigura)
+    async public Task<FiguraModel> GetById(int idFigura)
     {
-        Figura figura = null;
+        FiguraModel figura = null;
 
         string query = @"
 SELECT TOP 1 f.Id,
@@ -117,11 +118,11 @@ ORDER BY f.Area
 
                 if (tipo == 1)
                 {
-                    figura = new Rectangulo() { Id=id, Area=area, Ancho=ancho, Largo=largo};
+                    figura = new RectanguloModels() { Id=id, Area=area, Ancho=ancho, Largo=largo};
                 }
                 else if (tipo == 2)
                 {
-                    figura = new Circulo() { Id = id, Area = area, Radio = radio };
+                    figura = new CirculoModel() { Id = id, Area = area, Radio = radio };
                 }
             }
         }
@@ -132,7 +133,7 @@ ORDER BY f.Area
         return figura;
     }
     
-    async public Task<Figura> Add(Figura nuevo)
+    async public Task<FiguraModel> Add(FiguraModel nuevo)
     {
         int tipo = 0;
         double? ancho = null;
@@ -153,13 +154,13 @@ VALUES
             using SqlCommand comm = new SqlCommand(query, conn);
 
             
-            if (nuevo is Rectangulo r)
+            if (nuevo is RectanguloModels r)
             { 
                 tipo = 1;
                 ancho = r.Ancho;
                 largo = r.Largo;
             }
-            else if (nuevo is Circulo c)
+            else if (nuevo is CirculoModel c)
             {
                 tipo = 2;
                 radio = c.Radio;
@@ -181,7 +182,7 @@ VALUES
         return nuevo;
     }
 
-    async public Task<bool> Save(Figura entidad)
+    async public Task<bool> Save(FiguraModel entidad)
     {
         int id = 0;
         double? area = null;
@@ -201,12 +202,12 @@ WHERE Id=@Id_Figura
             using SqlCommand comm = new SqlCommand(query, conn);
 
             id = entidad.Id ?? 0;
-            if (entidad is Rectangulo r)
+            if (entidad is RectanguloModels r)
             {
                 ancho = r.Ancho;
                 largo = r.Largo;
             }
-            else if (entidad is Circulo c)
+            else if (entidad is CirculoModel c)
             {
                 radio = c.Radio;
             }
