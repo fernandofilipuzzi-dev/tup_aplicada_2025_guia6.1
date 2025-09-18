@@ -34,14 +34,22 @@ CREATE TABLE Figuras(
 GO
 
 -- c- Insertar figuras como ejemplo
+DECLARE @Ids TABLE(Id INT);
+DECLARE @Id INT;
 
 INSERT INTO Figuras(Tipo, Ancho, Largo, Radio) 
+OUTPUT INSERTED.Id INTO @Ids 
 VALUES
 (1, 1,    1,    NULL),
 (1, 1,    2,    NULL),
 (2, NULL, NULL, 1),
 (1, 2.2,    1,    NULL),
 (2, NULL, NULL, 2.1);
+
+SELECT TOP 1 @Id=Id FROM @Ids
+
+SELECT @Id
+
 
 
 
